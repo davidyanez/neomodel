@@ -30,15 +30,17 @@ def ensure_connection(func):
 
 
 class Database(local):
-    def __init__(self):
+    def __init__(self, config={}):
         self._active_transaction = None
         self.url = None
         self.driver = None
         self._pid = None
+        self.config = config
 
     def set_connection(self, url):
         self.url = url
         u = urlparse(url)
+
 
         if u.netloc.find('@') > -1 and u.scheme == 'bolt':
             credentials, hostname = u.netloc.rsplit('@', 1)
@@ -48,7 +50,7 @@ class Database(local):
                              " got {}".format(url))
 
         self.driver = GraphDatabase.driver('bolt://' + hostname,
-                                           auth=basic_auth(username, password))
+                                           auth=basic_auth(username, password), **self.config)
         self.refresh_connection()
 
     @ensure_connection
