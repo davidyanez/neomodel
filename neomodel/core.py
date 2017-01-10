@@ -8,7 +8,7 @@ from .hooks import hooks
 from .util import Database, classproperty
 from . import config
 
-db = Database()
+db = Database(config=config.DRIVER_CONFIG)
 
 
 def install_labels(cls, quiet=True, stdout=None):
